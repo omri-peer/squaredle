@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 from squaredle import ENGLISH_LETTERS
 
 def replace_letter(board, i, j, scoring_func):
@@ -60,17 +61,37 @@ def nudge_all_the_way(board, scoring_func):
             return
 
 def nudge_noise_grad(board, scoring_func):
-    pre_noise_score = -1
     pre_nudge_score = -1
     score = scoring_func(board)
-    while score > pre_noise_score:
-        while score > pre_nudge_score:
+
+    best_board = None
+    max_score = -1
+    regret_streak = 0
+    while regret_streak <= 10:
+        not_helping_streak = 0
+        while not_helping_streak <= 10:
             pre_nudge_score = score
-            score = nudge(board, scoring_func, steps=30)
-            print(score)
-        print(f'STUCK, {score=}')
-        pre_noise_score = score
-        add_noise(board, squares=5)
-        for i in range(5):
-            score = gradient_step(board, scoring_func)
-        print(f'MOVED, {score=}')
+            score = nudge(board, scoring_func, steps=50)
+            # print(f'NUDGE: {pre_nudge_score} -> {score}')
+            not_helping_streak += 1
+
+            if score > pre_nudge_score:
+                if score > max_score:
+                    best_board = deepcopy(board)
+                    max_score = score
+                    not_helping_streak = 0
+                    regret_streak = 0
+                continue
+
+            # print(f'STUCK: {score=}')
+            pre_move_score = score
+            add_noise(board, squares=1)
+            score = scoring_func(board)
+            # print(f'MOVED: {pre_move_score} -> {score}')
+        
+        for i in range(4):
+            for j in range(4):
+                board[i][j] = best_board[i][j]
+        print(f'TELEP ({regret_streak}): {score} -> {max_score}')
+        regret_streak += 1
+        score = max_score

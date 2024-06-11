@@ -63,7 +63,7 @@ class Squaredle:
     def print_board(self, board):
         print("\n".join([" ".join(row) for row in board]))
         print(self.get_score(board))
-        print(self.get_words(board))
+        # print(self.get_words(board))
 
     def create_board(self):
         return [[get_letter() for i in range(4)] for j in range(4)]
