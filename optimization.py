@@ -79,7 +79,7 @@ def nudge_grad_noise(board, scoring_func):
             if score == pre_nudge_score:
                 pre_grad_score = score
                 score = gradient_step(board, scoring_func)
-                print(f'GRAD: {pre_grad_score} -> {score}')
+                print(f'GRAD ({not_helping_streak / 10}): {pre_grad_score} -> {score}')
             if score > pre_nudge_score:
                 if score > max_score:
                     best_board = deepcopy(board)
@@ -97,6 +97,6 @@ def nudge_grad_noise(board, scoring_func):
         for i in range(4):
             for j in range(4):
                 board[i][j] = best_board[i][j]
-        print(f'TELEP ({regret_streak}): {score} -> {max_score}')
+        print(f'TELEP ({regret_streak/10}): {score} -> {max_score}')
         regret_streak += 1
         score = max_score
