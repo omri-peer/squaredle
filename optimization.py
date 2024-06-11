@@ -51,7 +51,8 @@ def nudge_all_the_way(board, scoring_func):
     score = scoring_func(board)
     while True:
         prev_score = score
-        score = nudge(board, scoring_func, steps=30)
+        score = nudge(board, scoring_func, steps=100)
+        print(score)
         if score > prev_score:
             continue
 
@@ -60,7 +61,7 @@ def nudge_all_the_way(board, scoring_func):
         if score == prev_score:
             return
 
-def nudge_noise_grad(board, scoring_func):
+def nudge_grad_noise(board, scoring_func):
     pre_nudge_score = -1
     score = scoring_func(board)
 
@@ -75,6 +76,10 @@ def nudge_noise_grad(board, scoring_func):
             # print(f'NUDGE: {pre_nudge_score} -> {score}')
             not_helping_streak += 1
 
+            if score == pre_nudge_score:
+                pre_grad_score = score
+                score = gradient_step(board, scoring_func)
+                print(f'GRAD: {pre_grad_score} -> {score}')
             if score > pre_nudge_score:
                 if score > max_score:
                     best_board = deepcopy(board)

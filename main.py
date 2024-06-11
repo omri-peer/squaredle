@@ -5,7 +5,7 @@ def main():
     squaredle = Squaredle()
     board = squaredle.create_board()
     squaredle.print_board(board)
-    nudge_noise_grad(board, scoring_func=squaredle.get_score)
+    nudge_grad_noise(board, scoring_func=squaredle.get_score)
     squaredle.print_board(board)
 
 if __name__ == '__main__':
