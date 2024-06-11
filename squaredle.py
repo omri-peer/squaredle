@@ -65,7 +65,7 @@ class Squaredle:
         print(self.get_score(board))
         print(self.get_words(board))
 
-    def get_board(self):
+    def create_board(self):
         return [[get_letter() for i in range(4)] for j in range(4)]
 
     def get_score(self, board):
