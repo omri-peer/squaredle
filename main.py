@@ -8,7 +8,7 @@ from optimization import *
 
 def main():
     squaredle = Squaredle()
-    board = squaredle.create_board()
+    board = create_board()
     squaredle.print_board(board)
     follow_favorites(board, scoring_func=squaredle.get_score)
     squaredle.print_board(board)
