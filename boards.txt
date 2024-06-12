@@ -46,8 +46,26 @@ O R I T
 S D E S
 989
 
+O S E G
+P L A N
+E R I T
+S D E S
+1025
+
+T S E D
+O R I N
+E L A T
+S P E S
+1033
+
 S L P S
 E I A E
 D N R T
 G E S O
 1078
+
+S P L S
+E I A E
+R T N R
+S E D S
+1086
