@@ -28,29 +28,29 @@ class Squaredle:
     def __init__(self) -> None:
         self.words_tree = create_tree()
 
-    def words_with_prefix(self, board, p, last_dict, last, remaining):
+    def words_with_prefix(self, board, p, last_dict, last, current):
         words = []
         if " " in last_dict:
             words.append(p)
 
-        for i in range(last[0] - 1, last[0] + 2):
-            for j in range(last[1] - 1, last[1] + 2):
-                if ((i, j) not in remaining) and (board[i][j] in last_dict):
-                    remaining.add((i, j))
-                    more_words = self.words_with_prefix(board, p + board[i][j], last_dict[board[i][j]], (i, j), remaining)
-                    remaining.remove((i, j))
+        for i in range(max(last[0] - 1, 0), min(last[0] + 2, 4)):
+            for j in range(max(last[1] - 1, 0), min(last[1] + 2, 4)):
+                if ((i, j) not in current) and (board[i][j] in last_dict):
+                    current.add((i, j))
+                    more_words = self.words_with_prefix(board, p + board[i][j], last_dict[board[i][j]], (i, j), current)
+                    current.remove((i, j))
                     words.extend(more_words)
 
         return words
 
     def get_words(self, board, verbose=False):
         all_words = []
-        remain = set([])
+        current = set([])
         for i in range(4):
             for j in range(4):
-                remain.add((i, j))
-                all_words.extend(self.words_with_prefix(board, board[i][j], self.words_tree[board[i][j]], [i,j], remain))
-                remain.remove((i, j))
+                current.add((i, j))
+                all_words.extend(self.words_with_prefix(board, board[i][j], self.words_tree[board[i][j]], [i,j], current))
+                current.remove((i, j))
         all_words = list(set(all_words))
 
         if verbose:
