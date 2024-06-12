@@ -225,6 +225,9 @@ def follow_favorites(board, scoring_func):
 
         print(f'favorites: {[score for score, _ in favorites]}')
         print(f'best: {max_score}')
+    for i in range(4):
+        for j in range(4):
+            board[i][j] = best_board[i][j]
 
 
             

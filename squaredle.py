@@ -35,22 +35,22 @@ class Squaredle:
 
         for i in range(last[0] - 1, last[0] + 2):
             for j in range(last[1] - 1, last[1] + 2):
-                if ([i,j] in remaining) and (board[i][j] in last_dict):
-                    remaining.remove([i, j])
-                    more_words = self.words_with_prefix(board, p + board[i][j], last_dict[board[i][j]], [i, j], remaining)
-                    remaining.append([i, j])
+                if ((i, j) not in remaining) and (board[i][j] in last_dict):
+                    remaining.add((i, j))
+                    more_words = self.words_with_prefix(board, p + board[i][j], last_dict[board[i][j]], (i, j), remaining)
+                    remaining.remove((i, j))
                     words.extend(more_words)
 
         return words
 
     def get_words(self, board, verbose=False):
         all_words = []
-        remain = [[i, j] for i in range(4) for j in range(4)]
+        remain = set([])
         for i in range(4):
             for j in range(4):
-                remain.remove([i,j])
+                remain.add((i, j))
                 all_words.extend(self.words_with_prefix(board, board[i][j], self.words_tree[board[i][j]], [i,j], remain))
-                remain.append([i, j])
+                remain.remove((i, j))
         all_words = list(set(all_words))
 
         if verbose:
