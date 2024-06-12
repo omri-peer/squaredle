@@ -6,9 +6,16 @@ from utils import *
 from squaredle import Squaredle
 from optimization import *
 
+BOARD = """
+S T E S
+E N A L
+D R I P
+S T E S
+"""
+
 def main():
     squaredle = Squaredle()
-    board = create_board()
+    board = load_board(BOARD)
     squaredle.print_board(board)
     follow_favorites(board, scoring_func=squaredle.get_score)
     squaredle.print_board(board)

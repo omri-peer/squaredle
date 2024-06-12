@@ -54,6 +54,48 @@ def gradient_step(board, scoring_func):
     board[best_i][best_j] = best_letter
     return max_score
 
+def flip_wisely(board, scoring_func):
+    best_board = deepcopy(board)
+    max_score = scoring_func(board)
+    for i0 in range(4):
+        for j0 in range(4):
+            for (i1, j1) in [(i0+1, j0), (i0, j0+1)]:
+                if i1 <= 3 >= j1:
+                    tmp = board[i0][j0]
+                    board[i0][j0] = board[i1][j1]
+                    board[i1][j1] = tmp
+
+                    score = scoring_func(board)
+                    if score > max_score:
+                        best_board = deepcopy(board)
+                        max_score = score
+                    
+                    tmp = board[i0][j0]
+                    board[i0][j0] = board[i1][j1]
+                    board[i1][j1] = tmp
+    for i in range(4):
+        for j in range(4):
+            board[i][j] = best_board[i][j]
+    return max_score
+
+def smart_step(board, scoring_func):
+    grad_board = deepcopy(board)
+    flip_board = deepcopy(board)
+    grad_score = gradient_step(grad_board, scoring_func)
+    flip_score = flip_wisely(flip_board, scoring_func)
+
+    best_board = board
+    if grad_score > flip_score:
+        best_board = grad_board
+    else:
+        best_board = flip_board
+    
+    for i in range(4):
+        for j in range(4):
+            board[i][j] = best_board[i][j]
+    
+    return max(grad_score, flip_score)
+
 def add_noise(board, squares=1):
     for i in range(squares):
         i = random.randint(0, 3)
@@ -95,6 +137,14 @@ def gradient_ascent(board, scoring_func):
     while score > prev_score:
         prev_score = score
         score = gradient_step(board, scoring_func)
+    return score
+
+def smart_ascent(board, scoring_func):
+    prev_score = -1
+    score = scoring_func(board)
+    while score > prev_score:
+        prev_score = score
+        score = smart_step(board, scoring_func)
     return score
 
 def nudge_grad_noise(board, scoring_func):
@@ -163,14 +213,14 @@ def grad_move_telep(board, scoring_func):
                 board[i][j] = best_board[i][j]
         print(f'TELEP ({regret_streak}/10): {score} -> {max_score}')
 
-def grad_double_nudge(board, scoring_func):
+def smart_grad_double_nudge(board, scoring_func):
     prev_score = -1
     score = scoring_func(board)
     while score > prev_score:
         prev_score = score
         score = nudge(board, scoring_func, 2, 5)
         print(f'NUDGE: {prev_score} -> {score}')
-        score = gradient_ascent(board, scoring_func)
+        score = smart_ascent(board, scoring_func)
     return score
 
 def grad_double_nudge_move_telep(board, scoring_func):
@@ -180,7 +230,7 @@ def grad_double_nudge_move_telep(board, scoring_func):
     while regret_streak <= 10:
         move_streak = 0
         while move_streak <= 10:
-            score = grad_double_nudge(board, scoring_func)
+            score = smart_grad_double_nudge(board, scoring_func)
             if score > max_score:
                 best_board = deepcopy(board)
                 max_score = score
@@ -205,7 +255,7 @@ def follow_favorites(board, scoring_func):
     done = []
     done_scores = set([])
     
-    score = grad_double_nudge(board, scoring_func)
+    score = smart_grad_double_nudge(board, scoring_func)
     best_board = deepcopy(board)
     max_score = score
 
@@ -217,7 +267,7 @@ def follow_favorites(board, scoring_func):
         for _ in range(5):
             child = deepcopy(board)
             add_noise(child, squares=2)
-            score = grad_double_nudge(child, scoring_func)
+            score = smart_grad_double_nudge(child, scoring_func)
             if score > max_score:
                 best_board = deepcopy(child)
                 max_score = score

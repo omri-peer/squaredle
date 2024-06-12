@@ -58,6 +58,24 @@ E L A T
 S P E S
 1033
 
+E S T D
+P A N E
+L I R S
+S E T O
+1047
+
+S E T D
+P A N E
+L I R S
+S E T A
+1050
+
+S E T D
+L A N E
+P I R S
+S E T A
+1070
+
 S L P S
 E I A E
 D N R T
@@ -75,3 +93,9 @@ E N A L
 D R I P
 S T E S
 1100
+
+O R E S
+S T I L
+E N A P
+G R E S
+1112
