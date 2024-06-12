@@ -7,10 +7,10 @@ from squaredle import Squaredle
 from optimization import *
 
 BOARD = """
-S T E S
-E N A L
-D R I P
-S T E S
+O R E S
+S T I L
+E N A P
+G R E S
 """
 
 def main():

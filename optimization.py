@@ -109,7 +109,7 @@ def random_flip(board):
     options = [(i0-1, j0), (i0+1, j0), (i0, j0-1), (i0, j0+1)]
     for i, j in options:
         if not ((0 <= i <= 3) and (0 <= j <= 3)):
-            options.remove(i, j)
+            options.remove((i, j))
     
     i1, j1 = random.choice(options)
     tmp = board[i0][j0]
@@ -266,12 +266,15 @@ def follow_favorites(board, scoring_func):
         done_scores.add(score)
         for _ in range(5):
             child = deepcopy(board)
-            add_noise(child, squares=2)
+            add_noise(child, squares=1)
+            random_flip(child)
             score = smart_grad_double_nudge(child, scoring_func)
             if score > max_score:
                 best_board = deepcopy(child)
                 max_score = score
                 squaredle.print_board(best_board)
+                with open("run_boards.txt", "+a") as f:
+                    f.write(str(board) + "\n")
 
             already_done = False
             if score in done_scores:
