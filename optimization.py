@@ -61,6 +61,19 @@ def add_noise(board, squares=1):
         letter = random.choice(ENGLISH_LETTERS)
         board[i][j] = letter
 
+def random_flip(board):
+    i0 = random.randint(0, 3)
+    j0 = random.randint(0, 3)
+    options = [(i0-1, j0), (i0+1, j0), (i0, j0-1), (i0, j0+1)]
+    for i, j in options:
+        if not ((0 <= i <= 3) and (0 <= j <= 3)):
+            options.remove(i, j)
+    
+    i1, j1 = random.choice(options)
+    tmp = board[i0][j0]
+    board[i0][j0] = board[i1][j1]
+    board[i1][j1] = tmp
+
 def nudge_all_the_way(board, scoring_func, num_squares=1):
     prev_score = -1
     score = scoring_func(board)
