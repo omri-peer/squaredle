@@ -2,7 +2,9 @@ import random
 import itertools
 from tqdm import tqdm
 from copy import deepcopy
-from squaredle import ENGLISH_LETTERS
+import bisect
+
+from squaredle import Squaredle, ENGLISH_LETTERS
 
 def replace_letters(board, coords, scoring_func):
     n = len(coords)
@@ -183,3 +185,46 @@ def grad_double_nudge_move_telep(board, scoring_func):
             for j in range(4):
                 board[i][j] = best_board[i][j]
         print(f'TELEP ({regret_streak}/10): {score} -> {max_score}')
+
+def follow_favorites(board, scoring_func):
+    squaredle = Squaredle() # REMOVE!!!
+    favorites = []
+    done = []
+    done_scores = set([])
+    
+    score = grad_double_nudge(board, scoring_func)
+    best_board = deepcopy(board)
+    max_score = score
+
+    bisect.insort(favorites, (score, deepcopy(board)))
+    while favorites:
+        score, board = favorites.pop(-1)
+        bisect.insort(done, (score, deepcopy(board)))
+        done_scores.add(score)
+        for _ in range(5):
+            child = deepcopy(board)
+            add_noise(child, squares=2)
+            score = grad_double_nudge(child, scoring_func)
+            if score > max_score:
+                best_board = deepcopy(child)
+                max_score = score
+                squaredle.print_board(best_board)
+
+            already_done = False
+            if score in done_scores:
+                for done_score, done_board in done: # Inefficient!!!
+                    if done_score == score:
+                        if all(all(done_board[i][j] == child[i][j] for j in range(4)) for i in range(4)):
+                            already_done = True
+                            break
+            
+            if not already_done:
+                bisect.insort(favorites, (score, child))
+                if len(favorites) >= 10:
+                    favorites.pop(0)
+
+        print(f'favorites: {[score for score, _ in favorites]}')
+        print(f'best: {max_score}')
+
+
+            
